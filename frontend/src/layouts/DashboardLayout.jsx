@@ -1,21 +1,23 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { canAccessPage, getCurrentUser } from '../config/roleAccess';
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/rangers', label: 'Rangers' },
-  { to: '/patrols', label: 'Patrols' },
-  { to: '/patrol-routes', label: 'Patrol Routes' },
-  { to: '/incidents', label: 'Incidents' },
-  { to: '/animals', label: 'Animals' },
-  { to: '/risk-zones', label: 'Risk Zones' },
-  { to: '/alerts', label: 'Alerts' },
-  { to: '/reports', label: 'Reports' },
-  { to: '/settings', label: 'Settings' },
+  { key: 'dashboard', to: '/dashboard', label: 'Dashboard' },
+  { key: 'rangers', to: '/rangers', label: 'Rangers' },
+  { key: 'patrols', to: '/patrols', label: 'Patrols' },
+  { key: 'patrol-routes', to: '/patrol-routes', label: 'Patrol Routes' },
+  { key: 'incidents', to: '/incidents', label: 'Incidents' },
+  { key: 'animals', to: '/animals', label: 'Animals' },
+  { key: 'risk-zones', to: '/risk-zones', label: 'Risk Zones' },
+  { key: 'alerts', to: '/alerts', label: 'Alerts' },
+  { key: 'reports', to: '/reports', label: 'Reports' },
+  { key: 'settings', to: '/settings', label: 'Settings' },
 ];
 
 function DashboardLayout() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const user = getCurrentUser();
+  const visibleNavItems = navItems.filter((item) => canAccessPage(user?.role, item.key));
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -33,7 +35,7 @@ function DashboardLayout() {
           </p>
         )}
         <nav className="flex flex-col gap-1 flex-1">
-          {navItems.map((item) => (
+          {visibleNavItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

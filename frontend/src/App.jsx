@@ -1,7 +1,10 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import RoleRoute from './components/RoleRoute';
 import DashboardLayout from './layouts/DashboardLayout';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Rangers from './pages/Rangers';
 import Patrols from './pages/Patrols';
@@ -18,17 +21,75 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/rangers" element={<Rangers />} />
-            <Route path="/patrols" element={<Patrols />} />
-            <Route path="/patrol-routes" element={<PatrolRoutes />} />
-            <Route path="/incidents" element={<Incidents />} />
-            <Route path="/animals" element={<Animals />} />
-            <Route path="/risk-zones" element={<RiskZones />} />
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/reports" element={<Reports />} />
+            <Route
+              path="/rangers"
+              element={
+                <RoleRoute pageKey="rangers">
+                  <Rangers />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/patrols"
+              element={
+                <RoleRoute pageKey="patrols">
+                  <Patrols />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/patrol-routes"
+              element={
+                <RoleRoute pageKey="patrol-routes">
+                  <PatrolRoutes />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/incidents"
+              element={
+                <RoleRoute pageKey="incidents">
+                  <Incidents />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/animals"
+              element={
+                <RoleRoute pageKey="animals">
+                  <Animals />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/risk-zones"
+              element={
+                <RoleRoute pageKey="risk-zones">
+                  <RiskZones />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/alerts"
+              element={
+                <RoleRoute pageKey="alerts">
+                  <Alerts />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <RoleRoute pageKey="reports">
+                  <Reports />
+                </RoleRoute>
+              }
+            />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>

@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import apiClient from '../api/client';
+import AuthLayout from '../layouts/AuthLayout';
+import GlassField from '../components/GlassField';
+import GlassButton from '../components/GlassButton';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -8,6 +11,8 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const resetSuccess = location.state?.resetSuccess;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,53 +31,56 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-950">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-lg shadow-lg p-8 w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-semibold text-gray-800 mb-1">Wildlife Conservation</h1>
-        <p className="text-gray-500 mb-6">Manager / Researcher Login</p>
-
+    <AuthLayout
+      eyebrow="Conservation Platform"
+      title="Welcome back"
+      subtitle="Sign in to continue monitoring conservation efforts."
+    >
+      <form onSubmit={handleSubmit}>
+        {resetSuccess && !error && (
+          <p className="mb-4 rounded-xl border border-emerald-300/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-100">
+            Your password has been reset. Please sign in.
+          </p>
+        )}
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2 mb-4">
+          <p className="mb-4 rounded-xl border border-red-300/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-200">
             {error}
           </p>
         )}
 
-        <label className="block text-sm text-gray-600 mb-1" htmlFor="email">
-          Email
-        </label>
-        <input
+        <GlassField
           id="email"
+          label="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-700"
           placeholder="you@example.com"
+          autoComplete="email"
+          required
         />
 
-        <label className="block text-sm text-gray-600 mb-1" htmlFor="password">
-          Password
-        </label>
-        <input
+        <GlassField
           id="password"
+          label="Password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-green-700"
-          placeholder="********"
+          placeholder="••••••••"
+          autoComplete="current-password"
+          required
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-800 text-white rounded py-2 font-medium hover:bg-green-900 disabled:opacity-60"
-        >
-          {loading ? 'Logging in...' : 'Log In'}
-        </button>
+        <div className="mb-6 flex justify-end">
+          <Link to="/forgot-password" className="text-sm text-emerald-300 hover:text-emerald-200">
+            Forgot password?
+          </Link>
+        </div>
+
+        <GlassButton type="submit" disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign In'}
+        </GlassButton>
       </form>
-    </div>
+    </AuthLayout>
   );
 }
 
