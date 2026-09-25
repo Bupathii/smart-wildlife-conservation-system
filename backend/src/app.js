@@ -13,8 +13,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Wildlife Conservation API is running' });
 });
 
-// Routes will be mounted here as each module is implemented, e.g.:
-// app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
+
+// Further routes will be mounted here as each module is implemented, e.g.:
+// app.use('/api/patrols', require('./routes/patrol.routes'));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });

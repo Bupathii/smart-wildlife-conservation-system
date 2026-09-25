@@ -1,15 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../api/client';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Authentication will be wired up to POST /api/auth/login in a later phase.
-    navigate('/dashboard');
+    setError('');
+    setLoading(true);
+    try {
+      const { data } = await apiClient.post('/auth/login', { email, password });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to log in. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -20,6 +33,12 @@ function Login() {
       >
         <h1 className="text-2xl font-semibold text-gray-800 mb-1">Wildlife Conservation</h1>
         <p className="text-gray-500 mb-6">Manager / Researcher Login</p>
+
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2 mb-4">
+            {error}
+          </p>
+        )}
 
         <label className="block text-sm text-gray-600 mb-1" htmlFor="email">
           Email
@@ -47,9 +66,10 @@ function Login() {
 
         <button
           type="submit"
-          className="w-full bg-green-800 text-white rounded py-2 font-medium hover:bg-green-900"
+          disabled={loading}
+          className="w-full bg-green-800 text-white rounded py-2 font-medium hover:bg-green-900 disabled:opacity-60"
         >
-          Log In
+          {loading ? 'Logging in...' : 'Log In'}
         </button>
       </form>
     </div>
